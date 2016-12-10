@@ -1,0 +1,233 @@
+\documentclass[11pt,a4paper]{extarticle}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={160mm,237mm},
+ left=25mm,
+ top=25mm,
+ }
+\usepackage[utf8x]{inputenc}
+\usepackage[english]{babel}
+\usepackage{bbm}
+\usepackage[usenames]{color}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{authblk}
+
+\begin{document}
+\title{Risk analysis and high-dimensional integrals}
+\author{{\LARGE Alexander Podkopaev, Nikita Puchkin, Igor Silin}}
+\affil[]{\textsc{Skolkovo Institute of science and technology}}
+\date{\today}
+\maketitle
+
+\section{Description of algorithm and PDE solver}
+
+We implement a solver for numerical solution of PDE
+
+\begin{equation}
+     \begin{aligned}
+     \nonumber
+        %\left\{
+        & \frac\partial{\partial t} u(x, t) = \sigma \frac{\partial^2}{\partial x^2} u(x, t) - V(x, t) u(x, t), \quad t\in [0, T], \, x\in \mathbb R \\
+        & u(x, 0) = f(x)
+        %\right.
+     \end{aligned}
+\end{equation}
+
+The exact solution is given by the Feynman-Kac formula
+
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+        u(x, T) = \int\limits_{C\{x, 0; T\}} f(\xi(T)) \exp\left\{ -\int\limits_0^T V(\xi(\tau), T-\tau) d\tau \right\} \mathcal D_\xi,
+    \end{aligned}
+\end{equation}
+where the integration is done over the set $C\{x, 0; T\}$ of all continuous paths $\xi(T) : [0, T] \rightarrow \mathbb R$ from the Banach space $\Xi([0, T], \mathbb R)$ starting at $\xi(0) = x$ and stopping at arbitrary endpoints at time $T$.
+$\mathcal D_\xi$ is the Wiener measure and $\xi(t)$ is the Wiener process.
+
+For numerical computation one can break the time range $[0, T]$ into $n$ intervals by points
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+        \tau_k = k \delta t, \qquad 0 \leq k < n, \qquad n: \, \tau_n = T
+    \end{aligned}
+\end{equation}
+The average path of a Brownian particle $\xi(\tau_k)$ after $k$ steps is defined as
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+        \xi^{(k)} = \xi(\tau_k) = x + \xi_1 + \dots + \xi_k,
+    \end{aligned}
+\end{equation}
+where every random step $\xi_i$, $1 \leq i \leq k$, is independently taken from a normal distribution $\mathcal N(0, 2\sigma\delta t)$.
+By definition $\xi^{(0)} = x$.
+
+On the introduced uniform grid one approximates
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+        \Lambda(T) = \int\limits_0^T V(\xi(\tau), T - \tau) d\tau \simeq \sum\limits_{i=0}^n w_i V_i^{(n)} \delta t, \qquad V_i^{(n)} \equiv V(\xi(\tau_i), \tau_{n-i}),
+    \end{aligned}
+\end{equation}
+where the set of weights $\{w_i\}_{i=0}^n$ is taken according to trapezoid rule or Simpson rule.
+Then
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    \exp\{-\Lambda(T)\} \simeq \prod\limits_{i=0}^n \exp\{-w_i V_i^(n) \delta t
+    \end{aligned}
+\end{equation}
+The Wiener measure transforms to $n$\/-dimensional measure
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    \mathcal D_\xi^{(n)} = \left( \frac\lambda\pi \right)^{\frac n2} \prod\limits_{k=1}^n \exp\{-\lambda \xi_k^2\} d\xi_k, \qquad \lambda = \frac1{4\sigma \delta t},
+    \end{aligned}
+\end{equation}
+and a numerical approximation of the exact solution can be written in the form
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    u^{(n)}(x, T) = \int\limits_{-\infty}^\infty \mathcal D_{xi} f(\xi^{(n)}) \prod\limits_{i=0}^n e^{-w_i v_i^{(n)}\delta t}
+    \end{aligned}
+\end{equation}
+
+The multidimensional integral can be represented in terms of $n$ one-dimensional convolutions.
+Define
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    F_k^{(n)}(x) = \sqrt{\frac\lambda\pi} \int\limits_{-\infty}^{\infty} \Phi_{k+1}^{(n)}(x+\xi) e^{-\lambda \xi^2} d\xi, \qquad x\in \mathbb R, \quad k = n, n-1, \dots, 1,
+    \end{aligned}
+\end{equation}
+where
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    \Phi_{k+1}^{(n)}(x) = F^{(n)}_{k+1}(x)\exp\{-w_k V(x, \tau_{n-k}) \delta t,
+    \end{aligned}
+\end{equation}
+and
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    F^{(n)}(x)_{n+1} = f(x)
+    \end{aligned}
+\end{equation}
+Then the numerical solution is given by formula
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    u^{(n)}(x, T) = F_1^{(n)}(x) e^{-w_0 V(x, T) \delta t}
+    \end{aligned}
+\end{equation}
+
+Since $F_k^{(n)}(x)$ is represented as integral over all real values, it is replaced by an integral over a segment
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    F_k^{(n)}(x) \simeq \tilde F_k^{(n)}(x) = \sqrt{\frac\lambda\pi} \int\limits_{-a_x}^{a_x - h_x} \Phi_{k+1}^{(n)}(x + \xi) e^{-\lambda \xi^2} d\xi
+    \end{aligned}
+\end{equation}
+
+The function $F_k^{(n)}(x)$ is computed on the uniform mesh 
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    x_i^{(k)} = -ka_x + ih_x, \qquad 0 \leq i \leq kM, \qquad h_x = \frac{a_x}{N_x}, \qquad M = 2N_x
+    \end{aligned}
+\end{equation}
+and the integration mesh is taken with the same step $h_x$
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    \xi_j = -a_x + jh_x, \qquad 0 \leq j < M
+    \end{aligned}
+\end{equation}
+
+Then
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    \tilde F_k^{(n)} (x_i^{(k)}) \simeq \sum\limits_{j=0}^{M-1} \mu_j \Phi_{k+1}^{(n)}(x_{i+j}^{(k+1)} p(\lambda, \xi_j), \qquad p(\lambda, \xi) = \sqrt{\frac\lambda\pi e^{-\lambda \xi^2}} \\
+    \Phi_{k+1}^{(n)}(x_i^{(k+1)} = \tilde F_{k+1}^{(n)}(x_i^{(k+1)} \exp\{ -w_k V(x_i^{(k+1)}, \tau_{n-k}) \delta t
+    \end{aligned}
+\end{equation}
+or in the matrix form
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    \tilde F_k^{(n)} = \Phi_{k+1}^{(n)} \circ \tilde\mu, \qquad \tilde\mu_j = \mu_j p(\lambda, \xi_j) \\
+    \Phi_{k+1}^{(n)} = \tilde F_{k+1}^{(n)} \exp\{ -w_k V(x^{(k+1)}, \tau_{n-k}) \delta t,
+    \end{aligned}
+\end{equation}
+where $a\circ b$ denotes a convolution of vectors $a \in \mathbb R^m$ and $b \in \mathbb R^k$, i. e. a vector $c \in \mathbb R^{m+k-1}$, such that
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    c_i = \sum\limits_{j=0}^{k-1} a_{i+j}b_j, \quad a_i = 0,\, \forall i: (i < 0) \bigvee (i \geq m) 
+    \end{aligned}
+\end{equation}
+
+The algorithm for computation of $u^{(n)}(x, T)$ is following.
+
+\begin{enumerate}
+    \item Given $T$, choose a time step $\delta t$ and the number of steps $n \frac T{\delta t}$.
+    \item Create 1D array $\tau$ of size $n$, $\tau_i = i \delta t$.
+    \item Create 1D array $w$ of size $(n+1)$, corresponding to the set of weights in trapezoid or Simpson rule.
+    \item Choose $a_x$, size of coordinate grid $M = 2N_x$ and a coordinate step $h_x = \frac{a_x}{N_x}$.
+    \item Initialize 1D array $\tilde F_{n+1}^{(n)}$ of size $(n+1)M$, where $F_{n+1}^{(n)} = f(x)$ and $x_i = -(n+1)a_x + ih_x$, $0 \leq i < (n+1)M$.
+    \item For $k = n, n-1, \dots, 1$ do
+        \begin{enumerate}
+        \item Create 1D array $x^{(k+1)}$ of size $(k+1)M$, $x_i^{(k+1)} = -(k+1)a_x + ih_x$, $0 \leq i < (k+1)M$
+        \item Create 1D array of size $(k + 1)M$ $e^{-w_k V(x^{(k)}, \tau_{n-k}) \delta t}$.
+        \item Create 1D array $\Phi_{k+1}^{(n)} = F_{k+1}^{(n)} \odot e^{-w_k V(x^{(k+1)}, \tau_{n-k}) \delta t}$.
+        \item Create 1D array $\mu$ of size $M+1$, corresponding to the set of weights.
+        \item Create 1D array $\xi$ of size $M+1$, where $\xi_j = -a_x + jh_x$, $0 \leq j < M+1$.
+        \item Create 1D array $\tilde\mu = \mu \odot p(\lambda, \xi)$.
+        \item Compute convolution $\tilde F_k^{(n)} = \Phi_{k+1}^{(n)} \circ \tilde\mu$. $\tilde F_k^{(n)}$ is 1D array of size $kM$.
+        \end{enumerate}
+    \item Create 1D array $x^{(1)}$ of size $M$, $x_i^{(1)} = -a_x + ih_x$, $0 \leq i < M$
+    \item Create 1D array of size $M$ $e^{-w_0 V(x^{(1)}, T) \delta t}$.
+    \item Compute the numerical solution $u^{(n)} = F_1^{(n)} \odot e^{-w_0 V(x^{(1)}, T) \delta t}$.
+         
+\end{enumerate}
+
+The proposed algorithm is implemented in class 'PDE\_Solver'.
+An object of the class has following attributes:
+\begin{itemize}
+    \item sigma
+    \item V
+    \item f
+    \item a\_x
+    \item M
+    \item h\_x
+    \item T
+    \item n
+    \item delta\_t
+    \item u -- numerical solution
+\end{itemize}
+Names of all attributes correspond to notations used in this paper.
+Methods of an object of the class 'PDE\_solver' are following:
+\begin{itemize}
+    \item Set\_Limits(float a) -- sets a\_x = a.
+    \item Convolve(1D array a, 1D array b) -- returns a 1D array $c = a \circ b$.
+    \item Convolve\_Low-rank(1D array a, 1D array b) -- returns a 1D array $c = a \circ b$ using low-rank cross approximation.
+    \item Solve() -- computes a numerical solution u according to the proposed algorithm.
+\end{itemize}
+        		
+\end{document}
+
+
+\begin{equation}
+    \begin{aligned}
+    \nonumber
+    \end{aligned}
+\end{equation}

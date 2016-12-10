@@ -1,0 +1,119 @@
+\documentclass[11pt,a4paper]{extarticle}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={160mm,237mm},
+ left=25mm,
+ top=25mm,
+ }
+\usepackage[utf8x]{inputenc}
+\usepackage[english]{babel}
+\usepackage{bbm}
+\usepackage[usenames]{color}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{authblk}
+
+ 
+\title{NLA course project \\
+"Risk analysis and high-dimensional integrals"}
+\author{Igor Silin, Nikita Puchkin, Aleksandr Podkopaev}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem formulation}
+
+	Problem statement is described in  \href{http://www.columbia.edu/~ks20/FE-Notes/4700-07-Notes-GBM.pdf}{[2]}. Let $c(s, t)$ denote the price at time $t$ of a derivative of a stock (such as a European call option) when the price of the stock $S(t) = s$. Then $c$ must satisfy the partial differential equation: 
+
+\begin{equation}
+	\begin{aligned}
+		&\frac{\partial c(s,t)}{\partial t} + rs \frac{\partial c(s,t)}{\partial s} + \frac12 \gamma^2 s^2 \frac{\partial^2 c(s,t)}{\partial s^2} = rc(s,t),
+		\;\;\;s \in \mathbbm{R}_{+},\;\; t \in [0;\;T^{\prime}],\\
+		&c(s,T^{\prime}) = g(s), \;\;\; s \in \mathbbm{R}_{+},\\
+		&c(0,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
+	\end{aligned}
+\end{equation}
+Here  $r$ is the risk-free interest rate and $\gamma$ is the volatility of the stock.
+This is called Black-Scholes partial differential equation. Different terminal conditions $g(s)$ corresponds to different types of derivatives (e.g. European call option).
+
+Consider variable substitution of the following type: $x=\ln s$ and $w(x,t) = c(s, t)$. Then after sequence of elementary transformations one obtains:
+\begin{equation}
+	\begin{aligned}
+		&\frac{\partial w(x,t)}{\partial t} + \left(r-\frac{\gamma^2}{2}\right) \frac{\partial w(x,t)}{\partial x} + 
+		\frac12 \gamma^2 \frac{\partial^2 w(x,t)}{\partial x^2} = rw(x,t),
+		\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
+		&w(x,T) = g(e^x), \;\;\; x \in \mathbbm{R},\\
+		&w(-\infty,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
+	\end{aligned}
+\end{equation}
+To get rid of the drift term $\left(r-\frac{\gamma^2}{2}\right) \frac{\partial w(x,t)}{\partial x}$ we introduce
+\begin{equation}
+	\begin{aligned}
+		v(x,t) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} w(x,t),
+	\end{aligned}
+\end{equation}
+and obtain
+\begin{equation}
+	\begin{aligned}
+		&\frac{\partial v(x,t)}{\partial t} + \frac12 \gamma^2 \frac{\partial^2 v(x,t)}{\partial x^2} = 
+		\left( r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2 \right) v(x,t),
+	 	\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
+		&v(x,T^{\prime}) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} g(e^x), \;\;\; x \in \mathbbm{R},\\
+		&v(-\infty,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
+	\end{aligned}
+\end{equation}
+Introducing 
+$\sigma = \frac12 \gamma^2$, $V(x,t) = V = r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2$ and
+$f(x) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} g(e^x)$  we have
+\begin{equation}
+	\begin{aligned}
+		&-\frac{\partial v(x,t)}{\partial t} = \sigma \frac{\partial^2 v(x,t)}{\partial x^2} - V(x,t) v(x,t),
+		\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
+		&v(x,T^{\prime}) = f(x), \;\;\; x \in \mathbbm{R},\\
+		&v(-\infty,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
+	\end{aligned}
+\end{equation}
+Finally, we set $u(x,t) = v(x, T-t)$ and obtain
+\begin{equation}
+	\begin{aligned}
+		&\frac{\partial u(x,t)}{\partial t} = \sigma \frac{\partial^2 u(x,t)}{\partial x^2} - V(x,t) u(x,t),
+		\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
+		&v(x,0) = f(x), \;\;\; x \in \mathbbm{R},\\
+		&v(-\infty,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
+	\end{aligned}
+\end{equation}
+The condition $v(-\infty,t) = 0$ will be satisfied automatically (prove!), so our partial differential equation is
+\begin{equation}
+	\begin{aligned}
+		&\frac{\partial u(x,t)}{\partial t} = \sigma \frac{\partial^2 u(x,t)}{\partial x^2} - V(x,t) u(x,t),
+		\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
+		&v(x,0) = f(x), \;\;\; x \in \mathbbm{R}.
+	\label{OseledetsForm}
+	\end{aligned}
+\end{equation}
+This form is exactly one that is considered in Oseledets's paper.
+
+So, when we have $g(s)$, $\gamma$, $r$ from our financial model, we just set
+\begin{equation}
+	\begin{aligned}
+		f(x) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} g(e^x), \;\; \sigma = \frac12 \gamma^2, \;\;\; V(x,t) = V = r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2,
+	\end{aligned}
+\end{equation}
+solve (\ref{OseledetsForm}) with this parameters, and reconstruct the desired function $c(s,t)$ as
+\begin{equation}
+	\begin{aligned}
+		c(s,t) = w(e^x, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} v(e^x, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} u(e^x, T^{\prime} - t).
+	\end{aligned}
+\end{equation}
+
+		
+
+\end{document}

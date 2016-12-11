@@ -44,7 +44,7 @@ class PDE_Solver():
             b = np.exp(-1. * w[k] * V * dt)
             Phi = F * b
             F = self.Convolve(Phi, mu)
-            x = np.linspace(-1 * k * a, k * a, (k + 1) * M + 1)
+            x = np.linspace(-1 * k * a, k * a, k * M + 1)
         
         V = self.V(x, T)
         self.u = F * np.exp(-1. * w[0] * V * dt)

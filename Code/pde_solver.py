@@ -6,22 +6,20 @@ import numpy as np
 
 class PDE_Solver():
     def __init__(self):
-        self.sigma = 1		# float, must be positive
-        self.V = None		# function of 2 variables: t, x; potential
+        self.sigma = 1		# float, must be positive; diffusion coefficient
+        self.V = None		# function of 2 variables: t, x; dissipation
         self.f = None		# function of 1 variable: x; initial condition
-        self.T = 0		# final moment of time
-        #self.dt = 0		# time step
-        self.n = 0		# number of time steps
-        self.a_x = 0		# right bound of coordinate segment
-        self.M = 0		# number of coordinate segments on the final iteration
-        #self.h_x = 0		# coordinate step
+        self.T = 0		# float; final moment of time
+        self.n = 0		# int; number of time steps
+        self.a_x = 0		# float; right bound of coordinate segment
+        self.M = 0		# int; number of coordinate segments on the final iteration
         self.u = None		# numerical solution
     
 	# Finds a numerical solution of PDE
     def Solve(self):
         T = self.T
         n = self.n
-        dt = T / n
+        dt = 1. * T / n
         a_x = self.a_x
         M = self.M
         h_x = 2. * a_x / M

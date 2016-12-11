@@ -57,7 +57,7 @@ Consider variable substitution of the following type: $x=\ln s$ and $w(x,t) = c(
 To get rid of the drift term $\left(r-\frac{\gamma^2}{2}\right) \frac{\partial w(x,t)}{\partial x}$ we introduce
 \begin{equation}
 	\begin{aligned}
-		v(x,t) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} w(x,t),
+		v(x,t) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})x} w(x,t),
 	\end{aligned}
 \end{equation}
 and obtain
@@ -66,13 +66,13 @@ and obtain
 		&\frac{\partial v(x,t)}{\partial t} + \frac12 \gamma^2 \frac{\partial^2 v(x,t)}{\partial x^2} = 
 		\left( r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2 \right) v(x,t),
 	 	\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
-		&v(x,T^{\prime}) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} g(e^x), \;\;\; x \in \mathbbm{R},\\
+		&v(x,T^{\prime}) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})x} g(e^x), \;\;\; x \in \mathbbm{R},\\
 		&v(-\infty,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
 	\end{aligned}
 \end{equation}
 Introducing 
 $\sigma = \frac12 \gamma^2$, $V(x,t) = V = r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2$ and
-$f(x) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} g(e^x)$  we have
+$f(x) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})x} g(e^x)$  we have
 \begin{equation}
 	\begin{aligned}
 		&-\frac{\partial v(x,t)}{\partial t} = \sigma \frac{\partial^2 v(x,t)}{\partial x^2} - V(x,t) v(x,t),
@@ -104,13 +104,13 @@ This form is exactly one that is considered in Oseledets's paper.
 So, when we have $g(s)$, $\gamma$, $r$, $T^{\prime}$ from our financial model, we just set
 \begin{equation}
 	\begin{aligned}
-		f(x) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} g(e^x), \;\; \sigma = \frac12 \gamma^2, \;\;\; V(x,t) = V = r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2,
+		f(x) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})x} g(e^x), \;\; \sigma = \frac12 \gamma^2, \;\;\; V(x,t) = V = r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2,
 	\end{aligned}
 \end{equation}
 solve (\ref{OseledetsForm}) with this parameters, and reconstruct the desired function $c(s,t)$ as
 \begin{equation}
 	\begin{aligned}
-		c(s,t) = w(e^x, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} v(\ln s, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} u(\ln s, T^{\prime} - t).
+		c(s,t) = w(e^x, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})\ln s} v(\ln s, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})\ln s} u(\ln s, T^{\prime} - t).
 	\end{aligned}
 \end{equation}
 

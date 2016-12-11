@@ -9,32 +9,32 @@ class PDE_Solver():
         self.sigma = 1		# float, must be positive
         self.V = None		# function of 2 variables: t, x; potential
         self.f = None		# function of 1 variable: x; initial condition
-        self.T = 0			# final moment of time
-        self.delta_t = 0	# time step
-        self.n = 0			# number of time steps
+        self.T = 0		# final moment of time
+        #self.dt = 0		# time step
+        self.n = 0		# number of time steps
         self.a_x = 0		# right bound of coordinate segment
-        self.M = 0			# number of coordinate segments on the final iteration
-        self.h_x = 0		# coordinate step
+        self.M = 0		# number of coordinate segments on the final iteration
+        #self.h_x = 0		# coordinate step
         self.u = None		# numerical solution
     
 	# Finds a numerical solution of PDE
     def Solve(self):
         T = self.T
-        dt = self.delta_t
         n = self.n
-        a = self.a_x
+        dt = T / n
+        a_x = self.a_x
         M = self.M
-        h = self.h_x
+        h_x = 2. * a_x / M
         sigma = self.sigma
         
         tau = np.linspace(0, T, n + 1)
         w = self.Trapezoid_Weights(n, dt)
         
-        x = np.linspace(-1 * (n + 1) * a, (n + 1) * a, (n + 1) * M + 1)
+        x = np.linspace(-1 * (n + 1) * a_x, (n + 1) * a_x, (n + 1) * M + 1)
         F = self.f(x)
         
-        mu = self.Trapezoid_Weights(M, h)
-        xi = np.linspace(-a, a, M + 1)
+        mu = self.Trapezoid_Weights(M, h_x)
+        xi = np.linspace(-a_x, a_x, M + 1)
         alpha = 1. / 4 / sigma / dt
         p = np.sqrt(alpha / np.pi) * np.exp(-1. * alpha * xi**2)
         mu = mu * p
@@ -44,7 +44,7 @@ class PDE_Solver():
             b = np.exp(-1. * w[k] * V * dt)
             Phi = F * b
             F = self.Convolve(Phi, mu)
-            x = np.linspace(-1 * k * a, k * a, k * M + 1)
+            x = np.linspace(-1 * k * a_x, k * a_x, k * M + 1)
         
         V = self.V(x, T)
         self.u = F * np.exp(-1. * w[0] * V * dt)
@@ -59,7 +59,7 @@ class PDE_Solver():
         
         return weights
     
-	# Convolution via FFT
+	# Convolution via FFT sum_j Phi[i, j] mu_j
 	# Phi[i, j] = Phi[i + j]
     def Convolve(self, Phi, mu):
         c1 = Phi[:self.M]

@@ -10,9 +10,9 @@ class PDE_Solver():
         self.V = None		# function of 2 variables: t, x; dissipation
         self.f = None		# function of 1 variable: x; initial condition
         self.T = 0		# float; final moment of time
-        self.n = 0		# int; number of time steps
+        self.n = 1		# int; number of time steps
         self.a_x = 0		# float; right bound of coordinate segment
-        self.M = 0		# int; number of coordinate segments on the final iteration
+        self.M = 2		# int; number of coordinate segments on the final iteration
         self.u = None		# numerical solution
     
 	# Finds a numerical solution of PDE

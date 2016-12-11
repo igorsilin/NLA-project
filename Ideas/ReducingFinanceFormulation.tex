@@ -50,7 +50,7 @@ Consider variable substitution of the following type: $x=\ln s$ and $w(x,t) = c(
 		&\frac{\partial w(x,t)}{\partial t} + \left(r-\frac{\gamma^2}{2}\right) \frac{\partial w(x,t)}{\partial x} + 
 		\frac12 \gamma^2 \frac{\partial^2 w(x,t)}{\partial x^2} = rw(x,t),
 		\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
-		&w(x,T) = g(e^x), \;\;\; x \in \mathbbm{R},\\
+		&w(x,T^{\prime}) = g(e^x), \;\;\; x \in \mathbbm{R},\\
 		&w(-\infty,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
 	\end{aligned}
 \end{equation}
@@ -81,7 +81,7 @@ $f(x) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} g(e^x)$  we have
 		&v(-\infty,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
 	\end{aligned}
 \end{equation}
-Finally, we set $u(x,t) = v(x, T-t)$ and obtain
+Finally, we set $u(x,t) = v(x, T^{\prime}-t)$ and obtain
 \begin{equation}
 	\begin{aligned}
 		&\frac{\partial u(x,t)}{\partial t} = \sigma \frac{\partial^2 u(x,t)}{\partial x^2} - V(x,t) u(x,t),
@@ -101,7 +101,7 @@ The condition $v(-\infty,t) = 0$ will be satisfied automatically (prove!), so ou
 \end{equation}
 This form is exactly one that is considered in Oseledets's paper.
 
-So, when we have $g(s)$, $\gamma$, $r$ from our financial model, we just set
+So, when we have $g(s)$, $\gamma$, $r$, $T^{\prime}$ from our financial model, we just set
 \begin{equation}
 	\begin{aligned}
 		f(x) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} g(e^x), \;\; \sigma = \frac12 \gamma^2, \;\;\; V(x,t) = V = r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2,
@@ -110,7 +110,7 @@ So, when we have $g(s)$, $\gamma$, $r$ from our financial model, we just set
 solve (\ref{OseledetsForm}) with this parameters, and reconstruct the desired function $c(s,t)$ as
 \begin{equation}
 	\begin{aligned}
-		c(s,t) = w(e^x, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} v(e^x, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} u(e^x, T^{\prime} - t).
+		c(s,t) = w(e^x, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} v(\ln s, t) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})} u(\ln s, T^{\prime} - t).
 	\end{aligned}
 \end{equation}
 

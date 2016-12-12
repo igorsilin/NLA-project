@@ -5,14 +5,14 @@
 import numpy as np
 
 class PDE_Solver():
-    def __init__(self):
-        self.sigma = 1		# float, must be positive; diffusion coefficient
-        self.V = None		# function of 2 variables: t, x; dissipation
-        self.f = None		# function of 1 variable: x; initial condition
-        self.T = 0		# float; final moment of time
-        self.n = 1		# int; number of time steps
-        self.a_x = 0		# float; right bound of coordinate segment
-        self.M = 2		# int; number of coordinate segments on the final iteration
+    def __init__(self, sigma=1, V=None, f=None, T=0, n=10, a_x=10, M=10):
+        self.sigma = sigma		# float, must be positive; diffusion coefficient
+        self.V = V		# function of 2 variables: x, t; dissipation
+        self.f = f		# function of 1 variable: x; initial condition
+        self.T = T		# float; final moment of time
+        self.n = n		# int; number of time steps
+        self.a_x = a_x		# float; right bound of coordinate segment
+        self.M = M	# int; number of coordinate segments on the final iteration
         self.u = None		# numerical solution
     
 	# Finds a numerical solution of PDE

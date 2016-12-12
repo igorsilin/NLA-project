@@ -14,6 +14,7 @@ class PDE_Solver():
         self.a_x = a_x		# float; right bound of coordinate segment
         self.M = M	# int; number of coordinate segments on the final iteration
         self.u = None		# numerical solution
+        self.x = np.linspace(-1 * a_x, a_x, M + 1)
     
 	# Finds a numerical solution of PDE
     def Solve(self):

@@ -1,1 +1,8 @@
 *.pyc
+*.aux
+*.log
+*.out
+*.gz
+*.snm
+*.nav
+*.toc

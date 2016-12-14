@@ -95,6 +95,7 @@ def visualize_analytical_solution(cur_type, costs, tt,E,r,gamma,T_prime,B, costs
             f_1[i, j] = cur_fun(costs[i, j + 1], tt[i, j],E,r,gamma,T_prime,B)
     fig = plt.figure()
     ax = fig.gca(projection='3d')
+    ax.set_title('Analytical solution')
     surf = ax.plot_wireframe(tt, costs[:,1:],  f_1, color='purple')
     ###########
     if g == g_eu_call:
@@ -120,6 +121,7 @@ def visualize_analytical_solution(cur_type, costs, tt,E,r,gamma,T_prime,B, costs
 def visualize_numerical_solution(costs, tt, values, costs_grid, g,E,B,M,T_prime):
     fig = plt.figure()
     ax = fig.gca(projection='3d')
+    ax.set_title('Numerical solution')
     surf = ax.plot_wireframe(tt, costs[:,1:], values[:,1:],color='purple')
     if g == g_eu_call:
         ax.plot(np.ones(M+1) * T_prime, costs_grid, g(costs_grid, E),linewidth = 4,color='red')
@@ -159,6 +161,7 @@ def visualize_difference(cur_type, costs, tt, values,E,r,gamma,T_prime,B):
             f_1[i, j] = cur_fun(costs[i, j + 1], tt[i, j],E,r,gamma,T_prime,B)
     fig = plt.figure()
     ax = fig.gca(projection='3d')
+    ax.set_title('Difference between numerical and analytical solutions')
     surf = ax.plot_wireframe(tt, costs[:,1:], values[:,1:] - f_1, color='purple')
     ax.set_xlabel('Time')
     ax.set_ylabel('Stock Price')

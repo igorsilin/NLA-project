@@ -1,4 +1,4 @@
-# I. Silin, N. Puchkin, A. Podkopaev
+# A. Podkopaev, N. Puchkin, I. Silin
 
 # Solver for Black-Scholes PDE
 

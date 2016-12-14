@@ -33,8 +33,8 @@ class PDE_Solver():
         x = np.linspace(-1 * (n + 1) * a_x, (n + 1) * a_x, (n + 1) * M + 1)
         F = self.f(x)
         
-        mu = self.Trapezoid_Weights(M, h_x)
-        #mu = self.Simpson_Weights(M, h_x)
+        #mu = self.Trapezoid_Weights(M, h_x)
+        mu = self.Simpson_Weights(M, h_x)
 
         xi = np.linspace(-a_x, a_x, M + 1)
         alpha = 1. / 4 / sigma / dt

@@ -29,21 +29,14 @@ class PDE_Solver():
         tau = np.linspace(0, T, n + 1)
         #w = self.Trapezoid_Weights(n, dt)
         w = self.Simpson_Weights(n, dt)
-<<<<<<< HEAD
-    
-=======
-	
->>>>>>> aeeedcae00dd15fd3d8982d7b300d6ff114b4051
+   
         x = np.linspace(-1 * (n + 1) * a_x, (n + 1) * a_x, (n + 1) * M + 1)
         F = self.f(x)
         
-        #mu = self.Trapezoid_Weights(M, h_x)
-        mu = self.Simpson_Weights(M, h_x)
-<<<<<<< HEAD
-    xi = np.linspace(-a_x, a_x, M + 1)
-=======
-	xi = np.linspace(-a_x, a_x, M + 1)
->>>>>>> aeeedcae00dd15fd3d8982d7b300d6ff114b4051
+        mu = self.Trapezoid_Weights(M, h_x)
+        #mu = self.Simpson_Weights(M, h_x)
+
+        xi = np.linspace(-a_x, a_x, M + 1)
         alpha = 1. / 4 / sigma / dt
         p = np.sqrt(alpha / np.pi) * np.exp(-1. * alpha * xi**2)
         mu = mu * p
@@ -89,9 +82,5 @@ class PDE_Solver():
         weights[0] = 1
         weights *= (step / 3)
         
-<<<<<<< HEAD
-        return weights
-=======
         return weights
 
->>>>>>> aeeedcae00dd15fd3d8982d7b300d6ff114b4051

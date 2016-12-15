@@ -52,7 +52,7 @@
 
 	\title[\hbox to 60mm{High-dimensional integrals \hfill\insertframenumber\,/\,10}]
 			{ Course project \\ <<High-dimensional integrals for option pricing>>}
-	\author[A. Podkopaev, N. Puchkin, I. Silin]{\large Alexander Podkopaev, Nikita Puchkin, Igor Silin}
+	\author[A. Podkopaev, N. Puchkin, I. Silin]{\large Alexander Podkopaev, Nikita Puchkin, Igor Silin \\Team <<Spokoynye>>}
 	\institute[Affiliation]{
 	\textsc{Skolkovo institute of science and technology}
 	}
@@ -74,8 +74,8 @@
 	\begin{frame}{Introduction to option pricing}	 
 		\begin{block}{Options}
 			\begin{itemize}
-				\item Contract which gives the owner of the option the right, but not the obligation, to buy or sell an underlying asset at a specified price on a specified date, depending on the form of the option.
-				\item Two basic types of options: the call and the put.
+				\item Contract which gives the owner of the option the right, but not the obligation, to buy or sell an underlying asset at a specified price on a specified date, depending on the form of the option
+				\item Two basic types of options: the call and the put
 				\item Call -  gives the holder the right to buy an asset 
 				\item Put - gives the holder the right to sell an asset
 			\end{itemize}
@@ -149,42 +149,21 @@
                     u(x, T) = \int\limits_{C\{x,0; T\}} f(\xi(T)) e^{-\int\limits_0^T V(\xi(\tau), T - \tau) d\tau} \mathcal D_\xi
                     \end{aligned}
                 \end{equation} 
-                \pause
                 \item Time discretization reduces this formula to n-dimensional integral ($n \gg 1$)
-                \pause
                 \item But it can be computed as $n$ one-dimensional convolutions efficiently  
+                \item Сonvolutions can be computed efficiently via FFT or/and low-rank approximations
             \end{itemize}		
 		\end{frame}
 		
 
 	\section{Experiments}
-		\begin{frame}{Definitions}
-	\begin{itemize}
-
-\item $E$ - exercise price of the option.
-
-\item $B$ - fixed value
-
-\item $d^{T^{\prime}}_{+}=\frac{\log(\frac{s}{E})+(r+\frac{\gamma^2}{2})(T^{\prime}-t) } { \gamma\sqrt{T^{\prime}-t}}$
-
-\item $d^{T^{\prime}}_{-}=\frac{\log(\frac{s}{E})+(r-\frac{\gamma^2}{2})(T^{\prime}-t) } { \gamma\sqrt{T^{\prime}-t}}$
-
-\item $\Phi(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x}e^{-\frac{y^2}{2}}dy$
-
-\end{itemize}			
-			\end{frame}					
-			\begin{frame}{Experiments: european put option}
-		 	Terminal conditions:
+						
+		\begin{frame}{Experiments: european put option}
+		
+				 	Terminal conditions:
 		 \[
 			g(s)=\max\{ E-s,0 \}	 
 		 \]	
-			\begin{block}{Analytical solution}	
-	\[
-		c(s,t) = Ee^{-r(T^{\prime}-t)}\Phi(-d^{T^{\prime}}_{-} ) - s\Phi(-d^{T^{\prime}}_{+} )	
-	\]	
-			\end{block}			
-		\end{frame}
-		\begin{frame}{Experiments: european put option}
 			\begin{minipage}{\linewidth}
       \centering
       \begin{minipage}{0.45\linewidth}
@@ -202,19 +181,14 @@
       \end{minipage}
   \end{minipage}
  	\end{frame}
-	\begin{frame}{Experiments: Cash-or-nothing call option}
-		 Terminal conditions:	 
+
+		\begin{frame}{Experiments: Cash-or-nothing call option}
+		
+				 Terminal conditions:	 
 		 \[
 			g(s)=\begin{cases} B, & s\geq E \\
 			0, & s< E \end{cases}
 		 \]	
-	\begin{block}{Analytical solution}	
-	\[
-		c(s,t) = Be^{-r(T^{\prime}-t)}\Phi(d^{T^{\prime}}_{-} ) 
-	\]	
-\end{block}				
-		\end{frame}
-		\begin{frame}{Experiments: Cash-or-nothing call option}
 \begin{minipage}{\linewidth}
       \centering
       \begin{minipage}{0.45\linewidth}

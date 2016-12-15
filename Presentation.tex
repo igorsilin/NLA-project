@@ -37,8 +37,8 @@
 \newtheorem{prob}{Problem}
 \def\eqdef{\stackrel{def}{=}}
 
-% \DeclareMathOperator*{\argmin}{argmin} 
-% \DeclareMathOperator*{\Argmin}{Argmin} 
+% \DeclareMathOperator*{\argmin}{argmin}
+% \DeclareMathOperator*{\Argmin}{Argmin}
 % \DeclareMathOperator{\barcnt}{bar}
 % \DeclareMathOperator{\supp}{supp}
 % \DeclareMathOperator{\est}{\mathbb{E}}
@@ -52,8 +52,8 @@
 	\title[\hbox to 60mm{High-dimensional integrals \hfill\insertframenumber\,/\,10}]
 			{ Course project \\ <<High-dimensional integrals for option pricing>>}
 	\author[A. Podkopaev, N. Puchkin, I. Silin]{\large Alexander Podkopaev, Nikita Puchkin, Igor Silin}
-	\institute[Affiiation]{
-	\textsc{Skolkovo institute of science and technology} 
+	\institute[Affiliation]{
+	\textsc{Skolkovo institute of science and technology}
 	}
 
 \date{\footnotesize{December 16, 2016}}
@@ -71,7 +71,7 @@
 	
 	\section{Introduction to option pricing }
 		\begin{frame}{Introduction to option pricing}
-		 
+		
 		\end{frame}
 
 	\section{From Black-Scholes to diffusion }
@@ -81,9 +81,9 @@
 			\begin{block}{Black-Scholes equation}
 				\begin{equation}
 					\begin{aligned}
-						&\frac{\partial c(s,t)}{\partial t} + 
-						rs \frac{\partial c(s,t)}{\partial s} + 
-						\frac12 \gamma^2 s^2 \frac{\partial^2 c(s,t)}{\partial s^2} = 
+						&\frac{\partial c(s,t)}{\partial t} +
+						rs \frac{\partial c(s,t)}{\partial s} +
+						\frac12 \gamma^2 s^2 \frac{\partial^2 c(s,t)}{\partial s^2} =
 						rc(s,t),\\
 						&c(s,T^{\prime}) = g(s), \;\;\;\;\; s \in \mathbbm{R}_{+},\\
 						&c(0,t) = 0, \;\;\;\;\;\;\;\;\;\;\;\; t \in [0;\;T^{\prime}].
@@ -96,7 +96,7 @@
 			\begin{block}{Substitution}
 						\begin{itemize}
 							\item New variable: $x=\ln s$
-							\item New initial condition: $f(x) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})x} g(e^x)$, 
+							\item New initial condition: $f(x) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})x} g(e^x)$,
 							\item New coefficients: $\sigma = \frac12 \gamma^2$,
 						 			$V(x,t) = V = r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2$,
 						 	%\item New soluton: $c(s,t) = e^{-\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})\ln s} u(\ln s, T^{\prime} - t)$.
@@ -127,17 +127,29 @@
 
 	\section{Idea of the method}
 		\begin{frame}{Idea of the method}
-		 
+            \begin{itemize}
+                \item The analytical solution is given by the Feynman-Kac formula
+                \begin{equation}
+                    \begin{aligned}
+                    \nonumber
+                    u(x, T) = \int\limits_{C\{x,0; T\}} f(\xi(T)) e^{-\int\limits_0^T V(\xi(\tau), T - \tau) d\tau} \mathcal D_\xi
+                    \end{aligned}
+                \end{equation} 
+                \pause
+                \item Time discretization reduces this formula to n-dimensional integral ($n \gg 1$)
+                \pause
+                \item But it can be computed as $n$ one-dimensional convolutions efficiently  
+            \end{itemize}		
 		\end{frame}
 		
 
 	\section{Experiments}
 		\begin{frame}{Experiments: european put option}
-		 
+		
 		\end{frame}
 
 		\begin{frame}{Experiments: something else (bounded!)}
-		 
+		
 		\end{frame}
 
 	\section{Discussion}
@@ -168,4 +180,4 @@
 			\centering{ \LARGE Thanks for your attention!}
 		\end{frame}
 
-\end{document}
+\end{document} 

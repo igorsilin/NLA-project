@@ -27,13 +27,11 @@ class PDE_Solver():
         sigma = self.sigma
         
         tau = np.linspace(0, T, n + 1)
-        #w = self.Trapezoid_Weights(n, dt)
         w = self.Simpson_Weights(n, dt)
    
         x = np.linspace(-1 * (n + 1) * a_x, (n + 1) * a_x, (n + 1) * M + 1)
         F = self.f(x)
         
-        #mu = self.Trapezoid_Weights(M, h_x)
         mu = self.Simpson_Weights(M, h_x)
 
         xi = np.linspace(-a_x, a_x, M + 1)
@@ -76,6 +74,11 @@ class PDE_Solver():
     # Weights corresponding to Simpson rule quadrature
     # Number of segments must be even!!!
     def Simpson_Weights(self, number_of_segments, step):
+        # If the number of segments is not even
+        # weights corresponding to trapezoid rule quadrature will be returned
+        if ((number_of_segments % 2) == 1)
+            return self.Trapezoid_Weights(number_of_segments, step)
+        
         repeats = number_of_segments // 2
         weights = np.tile(np.array([2, 4]), repeats)
         weights = np.concatenate([weights, np.ones(1)], axis=0)

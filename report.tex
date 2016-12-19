@@ -44,7 +44,7 @@ He described a background, formulated a problem and described, how to reduce it 
 
 Nikita implemented a solver for numerical solution of reaction-diffusion equation.
 The code can be found in 'pde\_solver.py'.
-He prepared description of method and algorithm in this report as well. 
+He prepared description of method and algorithm in this report as well.
 
 \item Aleksandr Podkopaev
 
@@ -61,7 +61,7 @@ Many stock prices can modelled using Brownian motion, i.e. the next state depend
 
 \section{Problem formulation}
 
-Denote by $s$ the stock price and by $c(s,t)$ general option value. Then consider Black-Scholes pricing model. It is known that in that case $c$ must satisfy the following partial differential equation:
+Denote by $s$ the stock price and by $c(s,t)$ general option value. Then consider Black-Scholes pricing model \cite{bs}. It is known that in that case $c$ must satisfy the following partial differential equation:
 
 \begin{equation}
 	\begin{aligned}
@@ -76,7 +76,7 @@ This is called Black-Scholes partial differential equation. Different terminal c
 
 \section{Data}
 
-We've chosen several types of options when setting terminal conditions allows to solve Black-Scholes PDE analytically. Let us consider these cases.
+We've chosen several types of options when setting terminal conditions allows to solve Black-Scholes PDE analytically \cite{options}. Let us consider these cases.
 
 \subsection{European call option}
 
@@ -639,6 +639,8 @@ We think, it will be better to build a stable difference scheme for Black-Schole
 
 \renewcommand{\refname}{References}
 \begin{thebibliography}{9}
+    \bibitem{bs} Options, Futures and Other Derivatives, 8th edition, pp. 299--331, J. C. Hull
+    \bibitem{options} Numerical solution of the Black-Scholes equation with a small number of grid points, MSc Thesis, C.C.W. Leentvaar, 2003
     \bibitem{oseledets} A low-rank approach to the computation of path integrals. M.S. Litsarev, I.V. Oseledets, 2015.
 \end{thebibliography}
 \end{document}

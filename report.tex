@@ -21,7 +21,7 @@
 \usepackage{authblk}
 \usepackage{float}
 \usepackage{caption}
- 
+
 \title{Course project \\
 "Risk analysis and high-dimensional integrals"}
 \author{ Nikita Puchkin, Igor Silin,Alexander Podkopaev }
@@ -36,9 +36,18 @@
 
 \item Igor Silin (leader)
 
+Igor implemented a solver for numerical solution of Black-Scholes partial differential equation.
+He described a background, formulated a problem and described, how to reduce it to reaction-diffusion equation as well.
+
 \item Nikita Puchkin
 
+Nikita implemented a solver for numerical solution of reaction-diffusion equation.
+He prepared description of method and algorithm in this report as well. 
+
 \item Aleksandr Podkopaev
+
+Alexandr found different options and tested solver for Black-Scholes partial differential equation.
+He prepared a section with data and results in this report as well.
 
 \end{itemize}
 
@@ -48,7 +57,7 @@ Many stock prices can modelled using Brownian motion, i.e. the next state depend
 
 \section{Problem formulation}
 
-Denote by $s$ the stock price and by $c(s,t)$ general option value. Then consider Black-Scholes pricing model. It is known that in that case $c$ must satisfy the following partial differential equation: 
+Denote by $s$ the stock price and by $c(s,t)$ general option value. Then consider Black-Scholes pricing model. It is known that in that case $c$ must satisfy the following partial differential equation:
 
 \begin{equation}
 	\begin{aligned}
@@ -195,20 +204,18 @@ Then the analytical solution for the case of case of asset-or-nothing put option
 
 \section{Related work}
 
-We implement the method based on one described in:
+We implement the method based on one described in \cite{oseledets}.
 
-     $[1]$  A low-rank approach to the computation of path integrals. M.S. Litsarev, I.V. Oseledets, 2015.
-    
 \section{Scope}
 
-The solution is based on two important steps: firstly, we reduce the initial problem to one described in related paper, secondly, we implement the method proposed in that paper to get numerical solution. 
+The solution is based on two important steps: firstly, we reduce the initial problem to one described in related paper, secondly, we implement the method proposed in that paper to get numerical solution.
 
 \subsection{Reduction to one-dimensional reaction-diffusion equation}
 
 Consider variable substitution of the following type: $x=\ln s$ and $w(x,t) = c(s, t)$. Then after sequence of elementary transformations one obtains:
 \begin{equation}
 	\begin{aligned}
-		&\frac{\partial w(x,t)}{\partial t} + \left(r-\frac{\gamma^2}{2}\right) \frac{\partial w(x,t)}{\partial x} + 
+		&\frac{\partial w(x,t)}{\partial t} + \left(r-\frac{\gamma^2}{2}\right) \frac{\partial w(x,t)}{\partial x} +
 		\frac12 \gamma^2 \frac{\partial^2 w(x,t)}{\partial x^2} = rw(x,t),
 		\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
 		&w(x,T^{\prime}) = g(e^x), \;\;\; x \in \mathbbm{R},\\
@@ -224,14 +231,14 @@ To get rid of the drift term $\left(r-\frac{\gamma^2}{2}\right) \frac{\partial w
 and obtain
 \begin{equation}
 	\begin{aligned}
-		&\frac{\partial v(x,t)}{\partial t} + \frac12 \gamma^2 \frac{\partial^2 v(x,t)}{\partial x^2} = 
+		&\frac{\partial v(x,t)}{\partial t} + \frac12 \gamma^2 \frac{\partial^2 v(x,t)}{\partial x^2} =
 		\left( r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2 \right) v(x,t),
 	 	\;\;\;x \in \mathbbm{R},\;\; t \in [0;\;T^{\prime}],\\
 		&v(x,T^{\prime}) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})x} g(e^x), \;\;\; x \in \mathbbm{R},\\
 		&v(-\infty,t) = 0, \;\;\; t \in [0;\;T^{\prime}].
 	\end{aligned}
 \end{equation}
-Introducing 
+Introducing
 $\sigma = \frac12 \gamma^2$, $V(x,t) = V = r +  \frac{1}{2\gamma^2} \left( r-\frac{\gamma^2}{2}\right)^2$ and
 $f(x) = e^{\frac{1}{\gamma^2} (r-\frac{\gamma^2}{2})x} g(e^x)$  we have
 \begin{equation}
@@ -291,6 +298,7 @@ We implement a solver for numerical solution of PDE
      \end{aligned}
 \end{equation}
 
+In this section we use the same idea as described in \cite{oseledets}.
 The exact solution is given by the Feynman-Kac formula
 
 \begin{equation}
@@ -387,7 +395,7 @@ Since $F_k^{(n)}(x)$ is represented as integral over all real values, it is repl
     \end{aligned}
 \end{equation}
 
-The function $F_k^{(n)}(x)$ is computed on the uniform mesh 
+The function $F_k^{(n)}(x)$ is computed on the uniform mesh
 \begin{equation}
     \begin{aligned}
     \nonumber
@@ -422,14 +430,14 @@ where $a\circ b$ denotes a convolution of vectors $a \in \mathbb R^m$ and $b \in
 \begin{equation}
     \begin{aligned}
     \nonumber
-    c_i = \sum\limits_{j=0}^{k-1} a_{i+j}b_j, \quad a_i = 0,\, \forall i: (i < 0) \bigvee (i \geq m) 
+    c_i = \sum\limits_{j=0}^{k-1} a_{i+j}b_j, \quad a_i = 0,\, \forall i: (i < 0) \bigvee (i \geq m)
     \end{aligned}
 \end{equation}
 
 The algorithm for computation of $u^{(n)}(x, T)$ is following.
 
 \begin{enumerate}
-    \item Given $T$, choose a time step $\delta t$ and the number of steps $n \frac T{\delta t}$.
+    \item Given $T$, choose a time step $\delta t$ and the number of steps $n = \frac T{\delta t}$.
     \item Create 1D array $\tau$ of size $n$, $\tau_i = i \delta t$.
     \item Create 1D array $w$ of size $(n+1)$, corresponding to the set of weights in trapezoid or Simpson rule.
     \item Choose $a_x$, size of coordinate grid $M = 2N_x$ and a coordinate step $h_x = \frac{a_x}{N_x}$.
@@ -447,31 +455,10 @@ The algorithm for computation of $u^{(n)}(x, T)$ is following.
     \item Create 1D array $x^{(1)}$ of size $M$, $x_i^{(1)} = -a_x + ih_x$, $0 \leq i < M$
     \item Create 1D array of size $M$ $e^{-w_0 V(x^{(1)}, T) \delta t}$.
     \item Compute the numerical solution $u^{(n)} = F_1^{(n)} \odot e^{-w_0 V(x^{(1)}, T) \delta t}$.
-         
+
 \end{enumerate}
 
 The proposed algorithm is implemented in class 'PDE\_Solver'.
-An object of the class has following attributes:
-\begin{itemize}
-    \item sigma
-    \item V
-    \item f
-    \item a\_x
-    \item M
-    \item h\_x
-    \item T
-    \item n
-    \item delta\_t
-    \item u -- numerical solution
-\end{itemize}
-Names of all attributes correspond to notations used in this paper.
-Methods of an object of the class 'PDE\_solver' are following:
-\begin{itemize}
-    \item Set\_Limits(float a) -- sets a\_x = a.
-    \item Convolve(1D array a, 1D array b) -- returns a 1D array $c = a \circ b$.
-    \item Convolve\_Low-rank(1D array a, 1D array b) -- returns a 1D array $c = a \circ b$ using low-rank cross approximation.
-    \item Solve() -- computes a numerical solution u according to the proposed algorithm.
-\end{itemize}
 
 \section{Evalution}
 
@@ -483,164 +470,171 @@ For each of the cases we present 3 plots: the plot for the numerical solution, t
 
 \subsection{European call option}
 
-			\begin{minipage}{\linewidth}
+\begin{minipage}{\linewidth}
       \centering
-      \begin{minipage}{0.3\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/eu-call-num}
               \caption{Numerical solution}
           \end{figure}
       \end{minipage}
-      \hspace{0.05\linewidth}
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/eu-call-analyt}
               \caption{Analytical solution}
           \end{figure}
       \end{minipage}
-  \end{minipage}
-     \[ \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/eu-call-dif}
               \caption{Difference between solutions}
           \end{figure}
-      \end{minipage}\]
+      \end{minipage}
+\end{minipage}
 
 \subsection{European put option}
 
-		\begin{minipage}{\linewidth}
+\begin{minipage}{\linewidth}
       \centering
-      \begin{minipage}{0.3\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/eu-put-num}
               \caption{Numerical solution}
           \end{figure}
       \end{minipage}
-      \hspace{0.05\linewidth}
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/eu-put-analyt}
               \caption{Analytical solution}
           \end{figure}
       \end{minipage}
-  \end{minipage}
-\[
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/eu-put-dif}
               \caption{Difference between solutions}
           \end{figure}
       \end{minipage}
-\]
+\end{minipage}
 
 \subsection{Cash-or-nothing call option}
 
-	\begin{minipage}{\linewidth}
+\begin{minipage}{\linewidth}
       \centering
-      \begin{minipage}{0.3\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/c-o-n-call-num}
               \caption{Numerical solution}
           \end{figure}
       \end{minipage}
-      \hspace{0.05\linewidth}
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/c-o-n-call-analyt}
               \caption{Analytical solution}
           \end{figure}
       \end{minipage}
-  \end{minipage}
-\[
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/c-o-n-call-dif}
               \caption{Difference between solutions}
           \end{figure}
       \end{minipage}
-\]
+\end{minipage}
 
 \subsection{Cash-or-nothing put option}
 
 \begin{minipage}{\linewidth}
       \centering
-      \begin{minipage}{0.3\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/c-o-n-put-num}
               \caption{Numerical solution}
           \end{figure}
       \end{minipage}
-      \hspace{0.05\linewidth}
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/c-o-n-put-analyt}
               \caption{Analytical solution}
           \end{figure}
       \end{minipage}
-  \end{minipage}
-\[
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/c-o-n-put-dif}
               \caption{Difference between solutions}
           \end{figure}
       \end{minipage}
-\]
+\end{minipage}
 
 \subsection{Asset-or-nothing call option}
 
 \begin{minipage}{\linewidth}
       \centering
-      \begin{minipage}{0.3\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/a-o-n-call-num}
               \caption{Numerical solution}
           \end{figure}
       \end{minipage}
-      \hspace{0.05\linewidth}
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/a-o-n-call-analyt}
               \caption{Analytical solution}
           \end{figure}
       \end{minipage}
-  \end{minipage}
-\[
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/a-o-n-call-dif}
               \caption{Difference between solutions}
           \end{figure}
       \end{minipage}
-\]
+\end{minipage}
 
 \subsection{Asset-or-nothing put option}
 
 \begin{minipage}{\linewidth}
       \centering
-      \begin{minipage}{0.3\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/a-o-n-put-num}
               \caption{Numerical solution}
           \end{figure}
       \end{minipage}
-      \hspace{0.05\linewidth}
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/a-o-n-put-analyt}
               \caption{Analytical solution}
           \end{figure}
       \end{minipage}
-  \end{minipage}
-\[
-      \begin{minipage}{0.3\linewidth}
+      \hspace{0.04\linewidth}
+      \begin{minipage}{0.29\linewidth}
           \begin{figure}[H]
               \includegraphics[width=\linewidth]{Figures/a-o-n-put-dif}
               \caption{Difference between solutions}
           \end{figure}
       \end{minipage}
-\]
+\end{minipage}
 
 \section{Conclusion}
 
+During this work we faced the following problem: when we used substitution $s = e^x$, a function in initial conditions became to grow exponentially in $x$, while it grew linearly in $s$.
+When we took a large number of time steps $n$, at the first step we had to find value of initial conditions at points with large coordinates and obtained an overflow.
+Thus, we were prohibited to take large numbers of steps and, consequently, accuracy of our computations suffered.
+Moreover, since $n$ was small we did not use low-rank approximation technique, because it was aimed to accelerate computations with insignificant loss of accuracy, while we were mostly interested in accurate solution.
+We think, that this restriction is caused by specificity of our problem and the method proposed in \cite{oseledets} is inappropriate for this problem.
+We think, it will be better to build a stable difference scheme for Black-Scholes PDE and not to make the substitution $s = e^x$.
+
+\renewcommand{\refname}{References}
+\begin{thebibliography}{9}
+    \bibitem{oseledets} A low-rank approach to the computation of path integrals. M.S. Litsarev, I.V. Oseledets, 2015.
+\end{thebibliography}
 \end{document}
